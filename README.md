@@ -1,4 +1,4 @@
-# Dengue Variant Calling Pipeline
+# Virus Variant Calling Pipeline
 
 This repository contains a bioinformatics pipeline for processing paired-end FASTQ files to perform read mapping, variant calling, consensus sequence generation, and annotation for dengue virus sequences. The pipeline is automated through a master script, `run_pipeline.py`, which orchestrates the execution of individual scripts in the correct order.
 
