@@ -97,18 +97,34 @@ def run_variant_calling(bam_file, reference_fasta, sample_name, output_dir):
 
 def run_snpeff_annotation(raw_vcf, sample_name, output_dir, reference_name="denv1"):
     annotated_vcf = os.path.join(output_dir, f"{sample_name}_annotated.vcf")
-    summary_html = os.path.join(output_dir, f"{sample_name}_snpEff_summary.html")    
+    summary_html = os.path.join(output_dir, f"{sample_name}_snpEff_summary.html")
+    summary_csv = os.path.join(output_dir, f"{sample_name}_snpEff_summary.csv")
     snpeff_command = (
         f"snpEff -Xmx4g "
         f"-c {os.path.join(output_dir, 'snpEff.config')} "
         f"-v {reference_name} "
-        f"-s {summary_html} "        
+        f"-s {summary_html} "
+        f"-csvStats {summary_csv} "
         f"{raw_vcf} > {annotated_vcf}"
     )
     stdout, stderr = run_command(snpeff_command)
     print("SnpEff annotation output:", stdout)
     print("SnpEff annotation error:", stderr)
-    return annotated_vcf, summary_html, os.path.join(output_dir, f"{sample_name}_snpEff_genes.txt")
+    return annotated_vcf, summary_html, summary_csv, os.path.join(output_dir, f"{sample_name}_snpEff_genes.txt")
+
+def run_snpsift_extract(annotated_vcf, sample_name, output_dir):
+    snpsift_output = os.path.join(output_dir, f"{sample_name}_snpSift.txt")
+    snpsift_command = (
+        f"SnpSift extractFields {annotated_vcf} "
+        f"CHROM POS REF ALT "
+        f"\"ANN[*].EFFECT\" \"ANN[*].IMPACT\" \"ANN[*].GENE\" \"ANN[*].GENEID\" "
+        f"\"ANN[*].FEATURE\" \"ANN[*].HGVS_C\" \"ANN[*].HGVS_P\" \"ANN[*].AA_POS\" "
+        f"\"EFF[*].CODON\" \"EFF[*].AA\" \"EFF[*].GENE\" > {snpsift_output}"
+    )
+    stdout, stderr = run_command(snpsift_command)
+    print("SnpSift extract output:", stdout)
+    print("SnpSift extract error:", stderr)
+    return snpsift_output
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -149,13 +165,16 @@ if __name__ == '__main__':
             consensus_fasta = f"{sample_name}.fa"
             os.rename(consensus_fasta, os.path.join(output_dir, consensus_fasta))
             raw_vcf = run_variant_calling(rg_bam, reference_fasta, sample_name, output_dir)
-            annotated_vcf, summary_html, summary_txt = run_snpeff_annotation(raw_vcf, sample_name, output_dir, database_name)
-            print("Consensus sequence, coverage file, coverage plot, annotated VCF, and SnpEff reports generated:", 
+            annotated_vcf, summary_html, summary_csv, summary_txt = run_snpeff_annotation(raw_vcf, sample_name, output_dir, database_name)
+            snpsift_output = run_snpsift_extract(annotated_vcf, sample_name, output_dir)
+            print("Consensus sequence, coverage file, coverage plot, annotated VCF, SnpEff reports, and SnpSift output generated:", 
                   os.path.join(output_dir, consensus_fasta), 
                   os.path.join(output_dir, coverage_file),
-                  annotated_vcf,  # Unpacked tuple
+                  annotated_vcf,
                   summary_html,
-                  summary_txt)
+                  summary_csv,
+                  summary_txt,
+                  snpsift_output)
         except Exception as e:
             print("Error occurred during processing:", str(e))
             continue
