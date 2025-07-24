@@ -48,6 +48,8 @@ cd Virus-Variant-Calling-Pipeline
 conda create -n dengue_pipeline python=3.10
 conda activate dengue_pipeline
 pip install -r requirements.txt
+conda install -c bioconda bwa-mem2 samtools fastp fastqc gatk4 snpeff snpsift ivar bcftools
+pip install .
 ```
 
 ### Option 2: From Conda (once published)
@@ -108,18 +110,22 @@ run_pipeline \
 
 ```
 Virus-Variant-Calling-Pipeline/
-├── virus_pipeline/              ← package with your renamed scripts
+├── virus_pipeline/
 │   ├── __init__.py
 │   ├── create_samplesheet.py
-│   ├── ...
-├── run_pipeline.py              ← CLI script (uses imports from virus_pipeline)
-├── setup.py                     ← you just created
-├── README.md
-├── conda-recipe/
-│   └── meta.yaml
-├── fastq_data/
-├── references/
-└── output/
+│   ├── map_reads.py
+│   ├── samtobamdenv.py
+│   ├── create_snpeff_database.py
+│   ├── sam2consensus_test2_ivar.py
+│   ├── variant_calling_consensus.py
+│   ├── summarize_result.py
+│   ├── summarize_snpEff.py
+├── run_pipeline.py
+├── setup.py
+├── requirements.txt
+├── environment.yml
+├── MANIFEST.in
+├── LICENSE
 ```
 
 ## Input Files
