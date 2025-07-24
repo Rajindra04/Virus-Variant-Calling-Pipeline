@@ -8,7 +8,7 @@ import logging
 # Add the pipeline module to the Python path if running locally
 sys.path.append(os.path.join(os.path.dirname(__file__), 'pipeline'))
 
-from pipeline import (
+from virus_pipeline import (
     create_samplesheet,
     map_reads,
     samtobamdenv,
