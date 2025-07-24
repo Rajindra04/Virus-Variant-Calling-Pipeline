@@ -45,6 +45,9 @@ The pipeline is executed by the `run_pipeline` entry point, which ensures proper
 ```bash
 git clone https://github.com/Rajindra04/Virus-Variant-Calling-Pipeline.git
 cd Virus-Variant-Calling-Pipeline
+conda create -n dengue_pipeline python=3.10
+conda activate dengue_pipeline
+pip install -r requirements.txt
 pip install -r requirements.txt
 ```
 
