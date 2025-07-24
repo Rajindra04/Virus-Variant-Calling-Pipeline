@@ -48,7 +48,6 @@ cd Virus-Variant-Calling-Pipeline
 conda create -n dengue_pipeline python=3.10
 conda activate dengue_pipeline
 pip install -r requirements.txt
-pip install -r requirements.txt
 ```
 
 ### Option 2: From Conda (once published)
