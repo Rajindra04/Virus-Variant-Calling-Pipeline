@@ -1,4 +1,4 @@
-Virus Variant Calling Pipeline
+## Virus Variant Calling Pipeline
 
 This repository contains a bioinformatics pipeline for processing paired-end FASTQ files to perform read mapping, variant calling, consensus sequence generation, and annotation for dengue virus sequences. The pipeline is automated through a master script, run_pipeline.py, or callable via a Conda-installed CLI command, dengue_pipeline.
 Table of Contents
@@ -25,7 +25,7 @@ Table of Contents
 
     License
 
-Overview
+## Overview
 
 The pipeline processes paired-end FASTQ files to:
 
@@ -61,7 +61,7 @@ Python
 
         argparse
 
-Bioinformatics Tools
+# Bioinformatics Tools
 
 (Install via Bioconda)
 
@@ -83,7 +83,7 @@ Bioinformatics Tools
 
     bcftools
 
-Input Files
+# Input Files
 
     Paired-end FASTQ files (e.g., sample1_R1.fastq.gz, sample1_R2.fastq.gz)
 
@@ -91,15 +91,15 @@ Input Files
 
     GenBank file for building SnpEff database (e.g., denv1.gb)
 
-Installation
-Option 1: Manual
+## Installation
+# Option 1: Manual
 
 git clone https://github.com/Rajindra04/Virus-Variant-Calling-Pipeline.git
 cd Virus-Variant-Calling-Pipeline
 pip install -r requirements.txt
 
 Ensure all external tools (listed above) are installed and in your PATH.
-Option 2: Using Conda (recommended)
+# Option 2: Using Conda (recommended)
 
 Once released via Anaconda or Bioconda:
 
@@ -109,8 +109,8 @@ Then, the pipeline can be run with:
 
 dengue_pipeline --input_dir ...  # (see below)
 
-Usage
-From source:
+## Usage
+# From source:
 
 python run_pipeline.py \
   --input_dir ./fastq_data \
@@ -119,7 +119,7 @@ python run_pipeline.py \
   --output_dir ./output \
   --database_name denv1
 
-From Conda-installed CLI (after packaging):
+# From Conda-installed CLI (after packaging):
 
 dengue_pipeline \
   --input_dir ./fastq_data \
@@ -128,8 +128,8 @@ dengue_pipeline \
   --output_dir ./output \
   --database_name denv1
 
-Pipeline Steps
-Script	Description
+## Pipeline Steps
+# Script	Description
 1.create_samplesheet.py	Auto-generates a sample sheet from FASTQ filenames
 2.map_reads.py	Maps reads using bwa-mem2, trims with fastp, and runs FastQC
 3.samtobamdenv.py	Converts SAM → BAM, sorts, indexes
@@ -139,7 +139,7 @@ Script	Description
 7.summarize_result.py	Summarizes coverage and FASTA statistics
 8.summarize_snpEff.py	Summarizes SnpEff annotations for variant effect interpretation
 
-Directory Structure
+## Directory Structure
 
 Virus-Variant-Calling-Pipeline/
 ├── virus_pipeline/
@@ -162,13 +162,13 @@ Virus-Variant-Calling-Pipeline/
 ├── environment.yml
 └── setup.py
 
-Input Files
+## Input Files
 File Type	Description
 FASTQ	Paired-end reads (e.g., sample1_R1.fastq.gz)
 FASTA	Reference genome (e.g., denv1.fasta)
 GenBank	Genomic annotations for SnpEff (e.g., denv1.gb)
 
-Output Files
+## Output Files
 File	Description
 samplesheet.tsv	Sample names and input file paths
 *_output/	FastQC reports and trimmed FASTQ
@@ -177,7 +177,7 @@ samplesheet.tsv	Sample names and input file paths
 *_coverage.txt, *.png	Coverage summaries and plots
 *_snpEff_summary.csv	Annotated variant summaries
 summary_table.csv, chart_data.json	JSON/CSV summaries for plotting
-Troubleshooting
+## Troubleshooting
 
     ❗ File not found
     Double-check --input_dir, --reference_fasta, and --genbank_file.
@@ -199,10 +199,10 @@ Ensure the output directory is writable:
     ❗ Unexpected VCF columns
     Inspect annotated VCFs to ensure proper ANN fields are present.
 
-Contributing
+# Contributing
 
 Contributions are welcome!
 Feel free to submit a pull request or file an issue for bugs, improvements, or feature ideas.
 License
 
-This project is licensed under the MIT License.
+# This project is licensed under the MIT License.
