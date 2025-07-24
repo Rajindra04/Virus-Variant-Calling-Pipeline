@@ -108,17 +108,15 @@ run_pipeline \
 
 ```
 Virus-Variant-Calling-Pipeline/
-├── pipeline/                  # Python package directory
+├── virus_pipeline/              ← package with your renamed scripts
 │   ├── __init__.py
-│   ├── run_pipeline.py
-│   ├── 1.create_samplesheet.py
-│   ├── 2.map_reads.py
-│   ├── 3.samtobamdenv.py
-│   ├── 4.sam2consensus_test2_ivar.py
-│   ├── 5.create_snpeff_database.py
-│   ├── 6.variant_calling_consensus.py
-│   ├── 7.summarize_result.py
-│   └── 8.summarize_snpEff.py
+│   ├── create_samplesheet.py
+│   ├── ...
+├── run_pipeline.py              ← CLI script (uses imports from virus_pipeline)
+├── setup.py                     ← you just created
+├── README.md
+├── conda-recipe/
+│   └── meta.yaml
 ├── fastq_data/
 ├── references/
 └── output/
