@@ -1,208 +1,208 @@
-# Virus Variant Calling Pipeline
+Virus Variant Calling Pipeline
 
-This repository contains a bioinformatics pipeline for processing paired-end FASTQ files to perform read mapping, variant calling, consensus sequence generation, and annotation for dengue virus sequences. The pipeline is automated through a master script, `run_pipeline.py`, which orchestrates the execution of individual scripts in the correct order.
+This repository contains a bioinformatics pipeline for processing paired-end FASTQ files to perform read mapping, variant calling, consensus sequence generation, and annotation for dengue virus sequences. The pipeline is automated through a master script, run_pipeline.py, or callable via a Conda-installed CLI command, dengue_pipeline.
+Table of Contents
 
-## Table of Contents
+    Overview
 
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Pipeline Steps](#pipeline-steps)
-- [Directory Structure](#directory-structure)
-- [Input Files](#input-files)
-- [Output Files](#output-files)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+    Prerequisites
 
-## Overview
+    Installation
+
+    Usage
+
+    Pipeline Steps
+
+    Directory Structure
+
+    Input Files
+
+    Output Files
+
+    Troubleshooting
+
+    Contributing
+
+    License
+
+Overview
 
 The pipeline processes paired-end FASTQ files to:
 
-- Generate a sample sheet from FASTQ files.
-- Map reads to a reference genome using `bwa-mem2`.
-- Convert SAM to BAM files, sort, and index them.
-- Create a SnpEff database for annotation.
-- Generate consensus sequences and initial VCFs using `ivar` and `bcftools`.
-- Perform variant calling with GATK, annotate variants with SnpEff, and extract specific annotation fields with SnpSift.
-- Summarize coverage and FASTA statistics.
-- Summarize SnpEff annotations for variant impact analysis.
+    Generate a sample sheet from FASTQ files.
 
-The master script, `run_pipeline.py`, automates these steps, ensuring proper input/output handling and error checking.
+    Map reads to a reference genome using bwa-mem2.
 
-## Prerequisites
+    Convert SAM to BAM, sort, and index the alignments.
 
-- **Python 3.6+** with the following packages:
-  - `pandas`
-  - `matplotlib`
-  - `argparse`
-  - `subprocess`
-  - `os`
-  - `glob`
-- **Bioinformatics Tools** (ensure they are in your system `PATH`):
-  - `bwa-mem2`
-  - `samtools`
-  - `fastp`
-  - `fastqc`
-  - `gatk`
-  - `snpEff`
-  - `SnpSift` (bundled with SnpEff or install via `conda install -c bioconda snpsift`)
-  - `ivar`
-  - `bcftools`
-- **Input Files**:
-  - Paired-end FASTQ files (e.g., `sample1_R1.fastq.gz`, `sample1_R2.fastq.gz`).
-  - Reference FASTA file (e.g., `denv1.fasta`).
-  - GenBank file for SnpEff database (e.g., `denv1.gb`).
+    Generate consensus sequences using ivar and bcftools.
 
-## Installation
+    Create a SnpEff database for annotation.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/dengue-pipeline.git
-   cd dengue-pipeline
-   ```
+    Perform variant calling using GATK, annotate variants with SnpEff, and extract annotation fields using SnpSift.
 
-2. Install Python dependencies:
-   ```bash
-   pip install pandas matplotlib
-   ```
+    Summarize coverage and FASTA stats.
 
-3. Ensure all bioinformatics tools are installed and accessible. For example:
-   - Install `samtools`: `sudo apt-get install samtools` (Ubuntu) or equivalent.
-   - Install `snpEff` and `SnpSift`: Follow instructions at [SnpEff documentation](https://pcingola.github.io/SnpEff/).
-   - Install via conda:
-     ```bash
-     conda install -c bioconda bwa-mem2 samtools fastp fastqc gatk4 snpeff snpsift ivar bcftools
-     ```
-   - Verify tools are in `PATH`:
-     ```bash
-     bwa-mem2 version
-     samtools --version
-     SnpSift
-     ```
+    Summarize SnpEff annotations for variant impact analysis.
 
-## Usage
+The run_pipeline.py script automates these steps with robust error handling and path management.
+Prerequisites
+Python
 
-Run the pipeline with a single command using `run_pipeline.py`:
+    Python ≥ 3.8
 
-```bash
-python run_pipeline.py --input_dir /path/to/fastq_files --reference_fasta /path/to/denv1.fasta --genbank_file /path/to/denv1.gb --output_dir /path/to/output --database_name denv1
-```
+    Required packages:
 
-### Command-Line Arguments
+        pandas
 
-- `--input_dir`: Directory containing paired-end FASTQ files.
-- `--reference_fasta`: Path to the reference FASTA file.
-- `--genbank_file`: Path to the GenBank file for SnpEff annotation.
-- `--output_dir`: Directory to store all output files.
-- `--database_name`: Name of the SnpEff database (default: `denv1`).
+        matplotlib
 
-### Example
+        pyyaml
 
-```bash
-python run_pipeline.py --input_dir ./fastq_data --reference_fasta ./references/denv1.fasta --genbank_file ./references/denv1.gb --output_dir ./output --database_name denv1
-```
+        argparse
 
-## Pipeline Steps
+Bioinformatics Tools
 
-The pipeline executes the following scripts in order:
+(Install via Bioconda)
 
-1. **`1.create_samplesheet.py`**: Generates a sample sheet (`samplesheet.tsv`) from FASTQ files.
-2. **`2.map_reads.py`**: Maps reads to the reference using `bwa-mem2`, trims with `fastp`, and runs `FastQC`.
-3. **`3.samtobamdenv.py`**: Converts SAM to BAM, sorts, and indexes BAM files.
-4. **`5.create_snpeff_database.py`**: Creates a SnpEff database from the GenBank and FASTA files.
-5. **`4.sam2consensus_test2_ivar.py`**: Generates consensus sequences and initial VCFs using `ivar` and `bcftools`.
-6. **`6.variant_calling_consensus.py`**: Performs variant calling with GATK, annotates variants with SnpEff, and extracts annotation fields (e.g., `CHROM`, `POS`, `ANN[*].EFFECT`, `ANN[*].IMPACT`) using SnpSift.
-7. **`7.summarize_result.py`**: Summarizes coverage and FASTA statistics in Excel files.
-8. **`8.summarize_snpEff.py`**: Summarizes SnpEff annotations into a CSV and JSON for visualization.
+    bwa-mem2
 
-## Directory Structure
+    samtools
 
-```
-dengue-pipeline/
-├── 1.create_samplesheet.py
-├── 2.map_reads.py
-├── 3.samtobamdenv.py
-├── 4.sam2consensus_test2_ivar.py
-├── 5.create_snpeff_database.py
-├── 6.variant_calling_consensus.py
-├── 7.summarize_result.py
-├── 8.summarize_snpEff.py
-├── run_pipeline.py
-├── fastq_data/               # Input directory for FASTQ files
-├── references/               # Directory for reference FASTA and GenBank files
-└── output/                   # Output directory for results
-```
+    fastp
 
-## Input Files
+    fastqc
 
-- **FASTQ Files**: Paired-end files named with `_R1_` and `_R2_` (e.g., `sample1_R1.fastq.gz`, `sample1_R2.fastq.gz`).
-- **Reference FASTA**: A single FASTA file (e.g., `denv1.fasta`) containing the reference genome.
-- **GenBank File**: A GenBank file (e.g., `denv1.gb`) for SnpEff annotation.
+    gatk4
 
-## Output Files
+    snpeff
 
-The pipeline generates the following outputs in the `output_dir`:
+    snpsift
 
-- `samplesheet.tsv`: Sample sheet with sample names and FASTQ paths.
-- `sam_files/`: Directory containing SAM files from read mapping.
-- `*_output/`: Sample-specific directories with trimmed FASTQ and FastQC reports.
-- `*.sorted.bam`: Sorted and indexed BAM files.
-- `*.fa`: Consensus FASTA sequences.
-- `*.vcf`: Variant call files (both raw and annotated).
-- `*_coverage.txt`: Coverage data files.
-- `*_coverage.png`: Coverage plots.
-- `*_snpEff_summary.html`, `*_snpEff_summary.csv`, `*_snpEff_genes.txt`: SnpEff annotation reports.
-- `*_snpSift.txt`: SnpSift output with extracted fields (e.g., `CHROM`, `POS`, `REF`, `ALT`, `ANN[*].EFFECT`, etc.).
-- `coverage_summary.xlsx`, `fasta_summary.xlsx`, `merged_summary.xlsx`: Summary statistics.
-- `summary_table.csv`, `chart_data.json`: SnpEff annotation summaries.
+    ivar
 
-## Troubleshooting
+    bcftools
 
-- **File Not Found Errors**: Ensure all input files and directories exist. Check paths provided to `--input_dir`, `--reference_fasta`, and `--genbank_file`.
-- **Tool Not Found**: Verify that all bioinformatics tools, including `SnpSift`, are installed and in your system `PATH`:
-  ```bash
-  which samtools
-  which bwa-mem2
-  which SnpSift
-  ```
-- **SnpEff Database Issues**: If `6.variant_calling_consensus.py` reports `Cannot find database repository`, ensure the SnpEff database was built correctly:
-  ```bash
-  ls -l output/data/denv1/
-  ```
-  Check for `snpEffectPredictor.bin`, `sequences.fa`, and `genes.gbk`. Rebuild the database if needed:
-  ```bash
-  python 5.create_snpeff_database.py --genbank_file references/denv1.gb --reference_fasta references/denv1.fasta --output_dir output --database_name denv1
-  ```
-- **SnpEff Warnings**: Warnings like `WARNING_TRANSCRIPT_NO_START_CODON` or `WARNING_TRANSCRIPT_NO_STOP_CODON` indicate issues with `denv1.gb` annotations. Inspect the GenBank file:
-  ```bash
-  head -n 50 references/denv1.gb
-  ```
-  Download a fresh copy if needed:
-  ```bash
-  wget -O references/denv1.gb "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=NC_001477.1&rettype=gb&retmode=text"
-  ```
-- **SnpSift Errors**: If `SnpSift extractFields` fails, verify the annotated VCF contains `ANN=` fields:
-  ```bash
-  grep -v "^#" output/D1-11_denv1_aln.sorted_annotated.vcf | head
-  ```
-  Ensure `SnpSift` is installed:
-  ```bash
-  SnpSift
-  ```
-- **Permission Issues**: Ensure write permissions for the output directory:
-  ```bash
-  chmod -R u+rw output
-  ```
-- **Column Mismatch in SnpEff Summaries**: If `8.summarize_snpEff.py` reports column mismatches, verify that SnpEff output files (`*_snpEff_genes.txt`) are correctly generated and contain expected columns.
+Input Files
 
-For detailed error logs, check the console output or log files generated by `run_pipeline.py`.
+    Paired-end FASTQ files (e.g., sample1_R1.fastq.gz, sample1_R2.fastq.gz)
 
-## Contributing
+    Reference FASTA (e.g., denv1.fasta)
 
-Contributions are welcome! Please submit a pull request or open an issue for bug reports, feature requests, or improvements.
+    GenBank file for building SnpEff database (e.g., denv1.gb)
 
-## License
+Installation
+Option 1: Manual
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+git clone https://github.com/Rajindra04/Virus-Variant-Calling-Pipeline.git
+cd Virus-Variant-Calling-Pipeline
+pip install -r requirements.txt
+
+Ensure all external tools (listed above) are installed and in your PATH.
+Option 2: Using Conda (recommended)
+
+Once released via Anaconda or Bioconda:
+
+conda install -c bioconda dengue-pipeline
+
+Then, the pipeline can be run with:
+
+dengue_pipeline --input_dir ...  # (see below)
+
+Usage
+From source:
+
+python run_pipeline.py \
+  --input_dir ./fastq_data \
+  --reference_fasta ./references/denv1.fasta \
+  --genbank_file ./references/denv1.gb \
+  --output_dir ./output \
+  --database_name denv1
+
+From Conda-installed CLI (after packaging):
+
+dengue_pipeline \
+  --input_dir ./fastq_data \
+  --reference_fasta ./references/denv1.fasta \
+  --genbank_file ./references/denv1.gb \
+  --output_dir ./output \
+  --database_name denv1
+
+Pipeline Steps
+Script	Description
+1.create_samplesheet.py	Auto-generates a sample sheet from FASTQ filenames
+2.map_reads.py	Maps reads using bwa-mem2, trims with fastp, and runs FastQC
+3.samtobamdenv.py	Converts SAM → BAM, sorts, indexes
+4.sam2consensus_test2_ivar.py	Generates consensus FASTAs using ivar and bcftools
+5.create_snpeff_database.py	Builds SnpEff database from GenBank and FASTA
+6.variant_calling_consensus.py	Calls variants with GATK, annotates with SnpEff, extracts with SnpSift
+7.summarize_result.py	Summarizes coverage and FASTA statistics
+8.summarize_snpEff.py	Summarizes SnpEff annotations for variant effect interpretation
+
+Directory Structure
+
+Virus-Variant-Calling-Pipeline/
+├── virus_pipeline/
+│   ├── __init__.py
+│   ├── pipeline/
+│   │   ├── 1.create_samplesheet.py
+│   │   ├── 2.map_reads.py
+│   │   ├── 3.samtobamdenv.py
+│   │   ├── 4.sam2consensus_test2_ivar.py
+│   │   ├── 5.create_snpeff_database.py
+│   │   ├── 6.variant_calling_consensus.py
+│   │   ├── 7.summarize_result.py
+│   │   └── 8.summarize_snpEff.py
+│   └── run_pipeline.py
+├── output/                   # Output folder
+├── fastq_data/              # Input FASTQ files
+├── references/              # Reference FASTA and GenBank
+├── LICENSE
+├── README.md
+├── environment.yml
+└── setup.py
+
+Input Files
+File Type	Description
+FASTQ	Paired-end reads (e.g., sample1_R1.fastq.gz)
+FASTA	Reference genome (e.g., denv1.fasta)
+GenBank	Genomic annotations for SnpEff (e.g., denv1.gb)
+
+Output Files
+File	Description
+samplesheet.tsv	Sample names and input file paths
+*_output/	FastQC reports and trimmed FASTQ
+*.sorted.bam, .bai	Sorted BAM alignments
+*.fa, *.vcf	Consensus FASTA and variant calls
+*_coverage.txt, *.png	Coverage summaries and plots
+*_snpEff_summary.csv	Annotated variant summaries
+summary_table.csv, chart_data.json	JSON/CSV summaries for plotting
+Troubleshooting
+
+    ❗ File not found
+    Double-check --input_dir, --reference_fasta, and --genbank_file.
+
+    ❗ Missing tools
+    Ensure tools like samtools, snpEff, SnpSift are in your PATH:
+
+which samtools
+which SnpSift
+
+❗ SnpEff DB not found
+Make sure create_snpeff_database.py is run before annotation steps.
+
+❗ Permission errors
+Ensure the output directory is writable:
+
+    chmod -R u+rw output/
+
+    ❗ Unexpected VCF columns
+    Inspect annotated VCFs to ensure proper ANN fields are present.
+
+Contributing
+
+Contributions are welcome!
+Feel free to submit a pull request or file an issue for bugs, improvements, or feature ideas.
+License
+
+This project is licensed under the MIT License.
