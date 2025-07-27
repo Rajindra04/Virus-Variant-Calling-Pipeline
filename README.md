@@ -49,6 +49,7 @@ conda create -n dengue_pipeline python=3.10
 conda activate dengue_pipeline
 pip install -r requirements.txt
 conda install -c bioconda bwa-mem2 samtools fastp fastqc gatk4 snpeff snpsift ivar bcftools
+conda install -c conda-forge openblas
 pip install .
 ```
 
