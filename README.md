@@ -48,7 +48,7 @@ The pipeline performs the following steps:
    pip install -r requirements.txt
    pip install .
    ```
-   Install Pip manually if not present and run the commands again
+   Install Pip manually if above commands does not work and run the commands again
 
 3. **Verify Tools**:
    Ensure all required tools are installed:
