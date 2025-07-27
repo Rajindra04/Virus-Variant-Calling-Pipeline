@@ -1,0 +1,37 @@
+package:
+  name: virus-variant-calling-pipeline
+  version: "0.1.0"
+
+source:
+  path: ..
+
+build:
+  noarch: python
+  script: python -m pip install .
+
+requirements:
+  build:
+    - python =3.11
+    - pip
+  run:
+    - python =3.11
+    - pandas >=2.2.2
+    - matplotlib >=3.8.4
+    - bwa-mem2 >=2.2.1
+    - samtools >=1.20
+    - fastp >=0.23.4
+    - fastqc >=0.12.1
+    - gatk4 >=4.5.0.0
+    - snpeff >=5.2
+    - snpsift >=5.2
+    - ivar >=1.4.2
+    - bcftools >=1.20
+
+about:
+  home: https://github.com/Rajindra04/Virus-Variant-Calling-Pipeline
+  license: MIT
+  summary: "A pipeline for virus variant calling from FASTQ data using multiple tools"
+
+extra:
+  recipe-maintainers:
+    - rajindra04

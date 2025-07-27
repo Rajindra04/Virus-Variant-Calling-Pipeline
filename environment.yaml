@@ -1,0 +1,23 @@
+name: dengue_pipeline
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pandas>=2.3.0
+  - numpy>=2.3.1
+  - matplotlib>=3.10.3
+  - pyyaml>=6.0.2
+  - bwa-mem2
+  - samtools
+  - fastp
+  - fastqc
+  - gatk4
+  - snpeff
+  - snpsift
+  - ivar
+  - bcftools
+  - pip:
+      - pytz==2025.2
+      - tzdata==2025.2
