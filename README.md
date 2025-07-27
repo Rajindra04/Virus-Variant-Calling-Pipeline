@@ -49,15 +49,18 @@ The pipeline performs the following steps:
    pip install .
    ```
    Install Pip manually if above commands does not work and run the commands again
+   ```bash
+   sudo apt-get apt-get install pip3
+   ```
 
-3. **Verify Tools**:
+4. **Verify Tools**:
    Ensure all required tools are installed:
    ```bash
    which bwa-mem2 samtools fastp fastqc gatk snpeff snpsift ivar bcftools
    python --version  # Should output Python 3.11.x
    ```
 
-4. **Download GenBank File (if not provided)**:
+5. **Download GenBank File (if not provided)**:
    ```bash
    wget -O denv1.gb "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=NC_001477.1&rettype=gb&retmode=text"
    ```
