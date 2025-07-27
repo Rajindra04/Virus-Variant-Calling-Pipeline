@@ -16,6 +16,7 @@ requirements:
   run:
     - python =3.11
     - pandas >=2.2.2
+    - numpy==3.2.2
     - matplotlib >=3.8.4
     - bwa-mem2 >=2.2.1
     - samtools >=1.20
